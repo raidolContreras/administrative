@@ -6,6 +6,7 @@ namespace App\Controllers\Api;
 
 use App\Models\LoginAttempt;
 use App\Models\User;
+use App\Services\PasswordResetService;
 use Core\Auth;
 use Core\Csrf;
 use Core\Exceptions\HttpException;
@@ -63,6 +64,38 @@ final class AuthController
     public function me(Request $request): Response
     {
         return Response::json(Auth::user());
+    }
+
+    /**
+     * Solicitud de recuperación. Respuesta SIEMPRE genérica (200) exista o no
+     * el correo — la anti-enumeración vive aquí; el trabajo real, en el Service.
+     */
+    public function forgot(Request $request): Response
+    {
+        $data = Validator::validate((array) $request->input(), [
+            'email' => 'required|email|max:190',
+        ]);
+
+        PasswordResetService::request($data['email'], $request->ip());
+
+        return Response::json([
+            'message' => 'Si el correo está registrado, te enviamos un enlace para restablecer la contraseña.',
+        ]);
+    }
+
+    /** Restablecimiento con token (un solo uso, expira) */
+    public function reset(Request $request): Response
+    {
+        $data = Validator::validate((array) $request->input(), [
+            'token' => 'required|max:64',
+            'password' => 'required|min:8|max:72',
+        ]);
+
+        if (!PasswordResetService::reset($data['token'], $data['password'], $request->ip())) {
+            return Response::error(422, 'INVALID_TOKEN', 'El enlace no es válido o ya expiró. Solicita uno nuevo.');
+        }
+
+        return Response::json(null);
     }
 
     /** Cambio de contraseña del propio usuario (requiere la actual) */

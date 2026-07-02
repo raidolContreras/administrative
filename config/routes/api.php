@@ -32,6 +32,8 @@ $router->post('/api/auth/login', [AuthController::class, 'login'], ['csrf']);
 $router->post('/api/auth/logout', [AuthController::class, 'logout'], ['auth', 'csrf']);
 $router->get('/api/auth/me', [AuthController::class, 'me'], ['auth', 'readonly']);
 $router->post('/api/auth/password', [AuthController::class, 'changePassword'], ['auth', 'csrf']);
+$router->post('/api/auth/forgot', [AuthController::class, 'forgot'], ['csrf']);
+$router->post('/api/auth/reset', [AuthController::class, 'reset'], ['csrf']);
 
 // Módulo base
 $router->get('/api/dashboard', [DashboardController::class, 'show'], ['auth', 'readonly']);

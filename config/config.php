@@ -12,6 +12,15 @@ return [
         'timezone' => Env::get('APP_TIMEZONE', 'America/Mexico_City'),
         'version' => CORE_VERSION,
         'asset_version' => Env::get('ASSET_VERSION', CORE_VERSION),
+        // URL pública de la instalación (para enlaces en correos). Vacío = derivar de la petición.
+        'url' => Env::get('APP_URL', ''),
+    ],
+
+    'mail' => [
+        // Remitente de correos transaccionales (recuperación de contraseña).
+        // Vacío = no se envía correo; el mensaje queda en storage/logs/mail.log.
+        'from' => Env::get('MAIL_FROM', ''),
+        'from_name' => Env::get('MAIL_FROM_NAME', ''),
     ],
 
     'db' => [
@@ -32,6 +41,10 @@ return [
     'security' => [
         'login_max_attempts' => 5,
         'login_window_minutes' => 15,
+        // Recuperación de contraseña
+        'reset_max_requests' => 3,      // solicitudes por correo…
+        'reset_window_minutes' => 15,   // …dentro de esta ventana
+        'reset_token_minutes' => 60,    // vigencia del enlace
     ],
 
     'uploads' => [

@@ -36,6 +36,15 @@ final class LoginAttempt extends Model
         return $failures >= $max;
     }
 
+    /** Conteo por identificador exacto en la ventana (rate limit de flujos no-login, p. ej. "reset:email") */
+    public static function recentCountByIdentifier(string $identifier, int $windowMinutes): int
+    {
+        return (int) Database::scalar(
+            'SELECT COUNT(*) FROM login_attempts WHERE identifier = ? AND attempted_at >= ?',
+            [mb_substr($identifier, 0, 190), date('Y-m-d H:i:s', time() - $windowMinutes * 60)]
+        );
+    }
+
     /** Limpieza ocasional (se llama al hacer login exitoso) */
     public static function gc(): void
     {

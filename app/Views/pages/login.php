@@ -30,4 +30,8 @@
             <span x-show="loading" x-cloak>Verificando…</span>
         </button>
     </form>
+
+    <p class="mt-4 text-center text-sm">
+        <a class="font-semibold text-accent hover:opacity-80" :href="Api.url('/recuperar')">¿Olvidaste tu contraseña?</a>
+    </p>
 </div>

@@ -16,6 +16,8 @@ $page = static function (string $pattern, string $view, array $middleware = [], 
 };
 
 $page('/login', 'login', ['guest'], 'auth');
+$page('/recuperar', 'forgot', ['guest'], 'auth');
+$page('/restablecer', 'reset', ['guest'], 'auth');
 $page('/instalar', 'install', [], 'auth');
 $page('/', 'dashboard', ['auth']);
 $page('/perfil', 'profile', ['auth']);
