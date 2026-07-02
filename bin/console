@@ -1,0 +1,242 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/*
+ * Consola de operación del template:
+ *   php bin/console <comando> [argumentos] [--opcion=valor]
+ */
+
+if (PHP_SAPI !== 'cli') {
+    exit(1);
+}
+
+require dirname(__DIR__) . '/config/bootstrap.php';
+
+use App\Models\User;
+use App\Support\Modules;
+use App\Support\Seeder;
+use Core\Console\CrudGenerator;
+use Core\Database;
+use Core\Migrator;
+
+$args = array_slice($argv, 1);
+$command = $args[0] ?? 'help';
+$options = [];
+$positional = [];
+foreach (array_slice($args, 1) as $arg) {
+    if (str_starts_with($arg, '--')) {
+        [$key, $value] = array_pad(explode('=', substr($arg, 2), 2), 2, '1');
+        $options[$key] = $value;
+    } else {
+        $positional[] = $arg;
+    }
+}
+
+function out(string $message): void
+{
+    echo $message . PHP_EOL;
+}
+
+function fail(string $message): never
+{
+    fwrite(STDERR, 'ERROR: ' . $message . PHP_EOL);
+    exit(1);
+}
+
+function writeModulesConfig(array $names): void
+{
+    $names = array_values(array_unique($names));
+    $content = "<?php\n\n/*\n * Módulos verticales activos en esta instalación.\n"
+        . " * Gestionar con: php bin/console module:enable <nombre> | module:disable <nombre>\n */\n"
+        . 'return ' . var_export($names, true) . ";\n";
+    if (file_put_contents(base_path('config/modules.php'), $content, LOCK_EX) === false) {
+        fail('No se pudo escribir config/modules.php');
+    }
+}
+
+try {
+    switch ($command) {
+        case 'migrate':
+            $applied = (new Migrator(Modules::migrationSources()))->migrate();
+            out($applied === [] ? 'Nada pendiente por migrar.' : "Migraciones aplicadas:\n  - " . implode("\n  - ", $applied));
+            break;
+
+        case 'migrate:rollback':
+            $steps = max(1, (int) ($options['steps'] ?? 1));
+            $reverted = (new Migrator(Modules::migrationSources()))->rollback($steps);
+            out($reverted === [] ? 'No hay lotes que revertir.' : "Migraciones revertidas:\n  - " . implode("\n  - ", $reverted));
+            break;
+
+        case 'migrate:status':
+            $status = (new Migrator(Modules::migrationSources()))->status();
+            out('Ejecutadas (' . count($status['executed']) . '):');
+            foreach ($status['executed'] as $name) {
+                out("  ✓ {$name}");
+            }
+            out('Pendientes (' . count($status['pending']) . '):');
+            foreach ($status['pending'] as $name) {
+                out("  … {$name}");
+            }
+            break;
+
+        case 'seed':
+            $executed = Seeder::run($positional[0] ?? null);
+            out($executed === [] ? 'No hay seeds.' : "Seeds ejecutados:\n  - " . implode("\n  - ", $executed));
+            break;
+
+        case 'module:list':
+            $active = Modules::activeNames();
+            foreach (glob(base_path('modules') . '/*/module.php') ?: [] as $file) {
+                $dir = basename(dirname($file));
+                $key = strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $dir));
+                $mark = in_array(strtolower($dir), array_map('strtolower', array_map([Modules::class, 'studly'], $active)), true)
+                    || in_array($key, $active, true) ? '[activo]' : '[inactivo]';
+                out("  {$dir} {$mark}");
+            }
+            out('Activos en config: ' . (implode(', ', $active) ?: '(ninguno)'));
+            break;
+
+        case 'module:enable':
+            $name = $positional[0] ?? fail('Uso: module:enable <nombre>');
+            if (!is_file(base_path('modules/' . Modules::studly($name) . '/module.php'))) {
+                fail("No existe modules/" . Modules::studly($name) . '/module.php');
+            }
+            $names = Modules::activeNames();
+            if (!in_array($name, $names, true)) {
+                $names[] = $name;
+                writeModulesConfig($names);
+            }
+            $applied = (new Migrator(Modules::migrationSources()))->migrate();
+            out("Módulo '{$name}' activado. Migraciones aplicadas: " . count($applied));
+            break;
+
+        case 'module:disable':
+            $name = $positional[0] ?? fail('Uso: module:disable <nombre>');
+            writeModulesConfig(array_values(array_diff(Modules::activeNames(), [$name])));
+            out("Módulo '{$name}' desactivado (sus tablas y datos se conservan).");
+            break;
+
+        case 'user:create-admin':
+            $name = $options['name'] ?? fail('Uso: user:create-admin --name="Nombre" --email=correo --password=secreta');
+            $email = $options['email'] ?? fail('Falta --email');
+            $password = $options['password'] ?? fail('Falta --password');
+            if (mb_strlen($password) < 8) {
+                fail('La contraseña debe tener al menos 8 caracteres.');
+            }
+            if (User::firstWhere('email', $email) !== null) {
+                fail("Ya existe un usuario con el correo {$email}");
+            }
+            $user = User::create([
+                'name' => $name,
+                'email' => $email,
+                'password_hash' => password_hash($password, PASSWORD_DEFAULT),
+                'role' => 'admin',
+                'is_active' => 1,
+            ]);
+            out("Administrador creado: {$user['name']} <{$user['email']}> (id {$user['id']})");
+            break;
+
+        case 'make:crud':
+            $module = $positional[0] ?? fail('Uso: make:crud <modulo> <Entidad> --route=ruta --fields="campo:tipo,..."');
+            $entity = $positional[1] ?? fail('Falta la Entidad (ej. Pet)');
+            $route = $options['route'] ?? fail('Falta --route (ej. mascotas)');
+            $fields = $options['fields'] ?? fail('Falta --fields (ej. "name:string:120,birth_date:date?")');
+            $generator = new CrudGenerator();
+            $result = $generator->generate($module, $entity, $route, $fields, [
+                'table' => $options['table'] ?? null,
+                'label' => $options['label'] ?? null,
+            ]);
+            out('Archivos generados:');
+            foreach ($result['files'] as $file) {
+                out("  + {$file}");
+            }
+            foreach ($result['notes'] as $note) {
+                out($note);
+            }
+            break;
+
+        case 'db:backup': {
+            $file = $options['out'] ?? storage_path('backups/backup-' . date('Ymd-His') . '.sql');
+            $dir = dirname($file);
+            if (!is_dir($dir)) {
+                mkdir($dir, 0775, true);
+            }
+            $pdo = Database::pdo();
+            $fh = fopen($file, 'w');
+            if ($fh === false) {
+                fail("No se pudo crear {$file}");
+            }
+            fwrite($fh, "-- Backup " . date('Y-m-d H:i:s') . " — BD " . config('db.database') . "\n");
+            fwrite($fh, "SET NAMES utf8mb4;\nSET FOREIGN_KEY_CHECKS = 0;\n\n");
+            $tables = $pdo->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN);
+            foreach ($tables as $table) {
+                $create = $pdo->query('SHOW CREATE TABLE `' . str_replace('`', '', (string) $table) . '`')->fetch();
+                fwrite($fh, 'DROP TABLE IF EXISTS `' . $table . "`;\n" . $create['Create Table'] . ";\n\n");
+                $offset = 0;
+                while (true) {
+                    $rows = Database::select('SELECT * FROM `' . str_replace('`', '', (string) $table) . '` LIMIT :l OFFSET :o', ['l' => 500, 'o' => $offset]);
+                    if ($rows === []) {
+                        break;
+                    }
+                    $values = [];
+                    foreach ($rows as $row) {
+                        $quoted = array_map(
+                            static fn ($v) => $v === null ? 'NULL' : (is_int($v) || is_float($v) ? (string) $v : $pdo->quote((string) $v)),
+                            array_values($row)
+                        );
+                        $values[] = '(' . implode(',', $quoted) . ')';
+                    }
+                    $columns = '`' . implode('`,`', array_map(static fn ($c) => str_replace('`', '', (string) $c), array_keys($rows[0]))) . '`';
+                    fwrite($fh, 'INSERT INTO `' . $table . '` (' . $columns . ") VALUES\n" . implode(",\n", $values) . ";\n");
+                    $offset += 500;
+                }
+                fwrite($fh, "\n");
+            }
+            fwrite($fh, "SET FOREIGN_KEY_CHECKS = 1;\n");
+            fclose($fh);
+            out('Backup generado: ' . $file . ' (' . round(filesize($file) / 1024, 1) . ' KB)');
+            break;
+        }
+
+        case 'serve': {
+            $host = $options['host'] ?? '127.0.0.1';
+            $port = $options['port'] ?? '8000';
+            out("Servidor de desarrollo en http://{$host}:{$port} (Ctrl+C para detener)");
+            passthru(sprintf(
+                '%s -S %s:%s -t %s %s',
+                escapeshellarg(PHP_BINARY),
+                $host,
+                $port,
+                escapeshellarg(base_path('public')),
+                escapeshellarg(base_path('public/index.php'))
+            ));
+            break;
+        }
+
+        case 'version':
+            out('Template administrativo v' . CORE_VERSION . ' — PHP ' . PHP_VERSION);
+            break;
+
+        case 'help':
+        default:
+            out(<<<TXT
+            Comandos disponibles:
+              migrate                     Aplica migraciones pendientes (núcleo + módulos activos)
+              migrate:rollback [--steps=N]  Revierte el/los últimos lotes
+              migrate:status              Estado de migraciones
+              seed [nombre]               Ejecuta seeds (todos, o uno: core | vet:demo)
+              module:list                 Módulos disponibles y su estado
+              module:enable <nombre>      Activa un módulo y migra
+              module:disable <nombre>     Desactiva un módulo (conserva datos)
+              user:create-admin --name= --email= --password=
+              make:crud <modulo> <Entidad> --route= --fields= [--table=] [--label=]
+              db:backup [--out=ruta.sql]  Respaldo SQL (sin depender de mysqldump)
+              serve [--host=] [--port=]   Servidor de desarrollo
+              version
+            TXT);
+    }
+} catch (\Throwable $e) {
+    fail($e->getMessage());
+}

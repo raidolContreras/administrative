@@ -1,0 +1,29 @@
+{
+    "name": "template/admin",
+    "description": "Template administrativo reutilizable en PHP 8.2 puro — API REST interna + frontend desacoplado (Tailwind/Alpine)",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.2",
+        "ext-pdo_mysql": "*",
+        "ext-mbstring": "*",
+        "ext-fileinfo": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Core\\": "core/",
+            "App\\": "app/",
+            "Modules\\": "modules/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "scripts": {
+        "serve": "php -S 127.0.0.1:8000 -t public public/index.php",
+        "migrate": "php bin/console migrate",
+        "post-install-cmd": "php -r \"file_put_contents('vendor/.htaccess', 'Require all denied' . PHP_EOL);\"",
+        "post-update-cmd": "php -r \"file_put_contents('vendor/.htaccess', 'Require all denied' . PHP_EOL);\""
+    }
+}

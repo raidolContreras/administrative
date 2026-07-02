@@ -1,0 +1,22 @@
+# .htaccess RAÍZ — solo interviene en modo cPanel (todo el proyecto dentro del DocumentRoot).
+# En VPS con DocumentRoot apuntando a public/ este archivo no participa.
+# NOTA cPanel: no borrar los bloques "# BEGIN/END" que el panel genere; añadirlos fuera de estas reglas.
+
+Options -Indexes
+
+# Nunca servir archivos ocultos (.env, .gitignore, etc.)
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Defensa en profundidad: prohibir acceso directo a directorios de código
+    RewriteRule ^(core|app|config|database|storage|vendor|modules|bin|resources)(/|$) - [F,L]
+    RewriteRule ^(composer\.(json|lock)|README\.md|CHANGELOG\.md)$ - [F,L]
+
+    # Reenviar todo lo demás a public/
+    RewriteCond %{REQUEST_URI} !/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>

@@ -1,0 +1,14 @@
+/vendor/
+/.env
+/storage/logs/*
+/storage/sessions/*
+/storage/uploads/*
+/storage/cache/*
+/storage/backups/*
+!/storage/**/.gitkeep
+/public/uploads/*
+!/public/uploads/.htaccess
+/bin/tailwindcss
+/bin/tailwindcss.exe
+.DS_Store
+Thumbs.db

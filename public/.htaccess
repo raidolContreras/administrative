@@ -1,0 +1,31 @@
+# URLs amigables: todo lo que no sea un archivo o directorio real pasa por index.php.
+# Si el hosting devuelve error 500, eliminar las dos líneas "Options" (algunos AllowOverride no las permiten)
+# y verificar que MultiViews esté desactivado en el vhost.
+
+Options -Indexes
+Options -MultiViews
+
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [L,QSA]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+</IfModule>
+
+# Cache larga para assets versionados (?v=)
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 30 days"
+    ExpiresByType application/javascript "access plus 30 days"
+    ExpiresByType image/svg+xml "access plus 30 days"
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/webp "access plus 30 days"
+</IfModule>

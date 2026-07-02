@@ -1,0 +1,8 @@
+# Directorio de archivos públicos subidos (solo branding: logo).
+# Jamás ejecutar código aquí aunque alguien logre subir un .php.
+RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .php8 .phps
+RemoveType .php .phtml
+<FilesMatch "\.(php|phtml|php\d|phps|cgi|pl|py|sh)$">
+    Require all denied
+</FilesMatch>
+Options -Indexes -ExecCGI
