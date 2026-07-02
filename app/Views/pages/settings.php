@@ -1,8 +1,8 @@
 <?php /* Configuración del negocio: branding en runtime (los valores llegan por la API) */ ?>
 <div x-data="settingsPage" class="max-w-2xl">
     <div class="mb-6">
-        <h1 class="text-xl font-bold text-slate-900">Configuración</h1>
-        <p class="text-sm text-slate-500">Identidad del negocio. Los cambios aplican de inmediato para todos.</p>
+        <h1 class="text-xl font-bold text-strong">Configuración</h1>
+        <p class="text-sm text-muted">Identidad del negocio. Los cambios aplican de inmediato para todos.</p>
     </div>
 
     <form class="card space-y-5 p-6" @submit.prevent="save()">
@@ -15,9 +15,9 @@
             <div>
                 <label class="label">Color principal</label>
                 <div class="flex items-center gap-3">
-                    <input type="color" class="h-10 w-14 cursor-pointer rounded-lg border border-slate-200"
+                    <input type="color" class="h-10 w-14 cursor-pointer rounded-lg border border-line"
                            x-model="values.primary_color">
-                    <span class="text-sm text-slate-500" x-text="values.primary_color"></span>
+                    <span class="text-sm text-muted" x-text="values.primary_color"></span>
                 </div>
             </div>
             <div>
@@ -34,8 +34,8 @@
         <div>
             <label class="label">Logo</label>
             <div class="flex items-center gap-4">
-                <img x-show="logoPreview" :src="logoPreview" class="h-14 w-14 rounded-lg border border-slate-200 bg-white object-cover" alt="">
-                <div x-show="!logoPreview" class="flex h-14 w-14 items-center justify-center rounded-lg border border-dashed border-slate-300 text-slate-400">
+                <img x-show="logoPreview" :src="logoPreview" class="h-14 w-14 rounded-lg border border-line bg-surface object-cover" alt="">
+                <div x-show="!logoPreview" class="flex h-14 w-14 items-center justify-center rounded-lg border border-dashed border-line text-faint">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"/>
                     </svg>
@@ -48,7 +48,7 @@
             <p class="hint">PNG, JPG o WebP · máximo 2 MB. Se muestra en el menú y en la pantalla de acceso.</p>
         </div>
 
-        <div class="flex justify-end border-t border-slate-100 pt-4">
+        <div class="flex justify-end border-t border-line pt-4">
             <button type="submit" class="btn btn-primary" :disabled="saving">
                 <span x-show="!saving">Guardar cambios</span>
                 <span x-show="saving" x-cloak>Guardando…</span>

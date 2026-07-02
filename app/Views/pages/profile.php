@@ -1,8 +1,8 @@
 <?php /* Perfil propio: datos de sesión + cambio de contraseña */ ?>
 <div x-data="profilePage" class="max-w-xl space-y-6">
     <div>
-        <h1 class="text-xl font-bold text-slate-900">Mi perfil</h1>
-        <p class="text-sm text-slate-500">Tu cuenta en este sistema.</p>
+        <h1 class="text-xl font-bold text-strong">Mi perfil</h1>
+        <p class="text-sm text-muted">Tu cuenta en este sistema.</p>
     </div>
 
     <div class="card flex items-center gap-4 p-6">
@@ -10,15 +10,15 @@
               style="background-color: var(--brand)"
               x-text="$store.app.user ? $store.app.user.name.charAt(0).toUpperCase() : ''"></span>
         <div class="min-w-0">
-            <p class="truncate font-semibold text-slate-900" x-text="$store.app.user ? $store.app.user.name : ''"></p>
-            <p class="truncate text-sm text-slate-500" x-text="$store.app.user ? $store.app.user.email : ''"></p>
+            <p class="truncate font-semibold text-strong" x-text="$store.app.user ? $store.app.user.name : ''"></p>
+            <p class="truncate text-sm text-muted" x-text="$store.app.user ? $store.app.user.email : ''"></p>
             <span class="badge badge-brand mt-1"
                   x-text="$store.app.user && $store.app.user.role === 'admin' ? 'Administrador' : 'Empleado'"></span>
         </div>
     </div>
 
     <form class="card space-y-4 p-6" @submit.prevent="save()">
-        <h2 class="text-sm font-semibold text-slate-900">Cambiar contraseña</h2>
+        <h2 class="text-sm font-semibold text-strong">Cambiar contraseña</h2>
         <div>
             <label class="label">Contraseña actual</label>
             <input type="password" class="input" :class="err('current_password') && 'input-error'"
@@ -37,7 +37,7 @@
                    x-model="confirm" autocomplete="new-password" required>
             <p class="field-error" x-show="mismatch">Las contraseñas no coinciden.</p>
         </div>
-        <div class="flex justify-end border-t border-slate-100 pt-4">
+        <div class="flex justify-end border-t border-line pt-4">
             <button type="submit" class="btn btn-primary" :disabled="saving || mismatch">
                 <span x-show="!saving">Actualizar contraseña</span>
                 <span x-show="saving" x-cloak>Guardando…</span>

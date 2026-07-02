@@ -2,8 +2,8 @@
 <div x-data="dashboardPage">
     <div class="mb-6 flex items-center justify-between">
         <div>
-            <h1 class="text-xl font-bold text-slate-900">Inicio</h1>
-            <p class="text-sm text-slate-500">Resumen general del negocio.</p>
+            <h1 class="text-xl font-bold text-strong">Inicio</h1>
+            <p class="text-sm text-muted">Resumen general del negocio.</p>
         </div>
     </div>
 
@@ -17,20 +17,20 @@
                     </svg>
                 </span>
                 <div class="min-w-0">
-                    <p class="truncate text-sm text-slate-500" x-text="stat.label"></p>
-                    <p class="text-2xl font-bold text-slate-900" x-text="stat.value"></p>
+                    <p class="truncate text-sm text-muted" x-text="stat.label"></p>
+                    <p class="text-2xl font-bold text-strong" x-text="stat.value"></p>
                 </div>
             </div>
         </template>
         <template x-if="loading">
-            <div class="card p-5 text-sm text-slate-400">Cargando…</div>
+            <div class="card p-5 text-sm text-faint">Cargando…</div>
         </template>
     </div>
 
     <!-- Actividad reciente -->
     <div class="card mt-6">
-        <div class="border-b border-slate-100 px-5 py-4">
-            <h2 class="text-sm font-semibold text-slate-900">Actividad reciente</h2>
+        <div class="border-b border-line px-5 py-4">
+            <h2 class="text-sm font-semibold text-strong">Actividad reciente</h2>
         </div>
         <div class="overflow-x-auto">
             <table class="tbl">
@@ -52,11 +52,11 @@
                                       :class="{ create: 'badge-green', update: 'badge-amber', delete: 'badge-red' }[item.action] || 'badge-slate'"
                                       x-text="{ create: 'Creación', update: 'Edición', delete: 'Eliminación' }[item.action] || item.action"></span>
                             </td>
-                            <td class="text-slate-500" x-text="item.entity_type + ' #' + item.entity_id"></td>
+                            <td class="text-muted" x-text="item.entity_type + ' #' + item.entity_id"></td>
                         </tr>
                     </template>
                     <tr x-show="!loading && recent.length === 0">
-                        <td colspan="4" class="py-8 text-center text-sm text-slate-400">Sin actividad todavía.</td>
+                        <td colspan="4" class="py-8 text-center text-sm text-faint">Sin actividad todavía.</td>
                     </tr>
                 </tbody>
             </table>

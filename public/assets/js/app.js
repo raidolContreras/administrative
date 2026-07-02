@@ -38,6 +38,39 @@ document.addEventListener('alpine:init', () => {
             return !role || (this.user && (this.user.role === role || this.user.role === 'admin'));
         },
 
+        // ---- Tema: system | light | dark. Persistido en localStorage; sigue al sistema en 'system'. ----
+        themeMode: 'system',
+        effectiveDark: false,
+        _mql: null,
+        initTheme() {
+            if (this._mql) return; // idempotente
+            try {
+                this.themeMode = localStorage.getItem('sereno-theme') || 'system';
+            } catch (e) {
+                this.themeMode = 'system';
+            }
+            this._mql = window.matchMedia('(prefers-color-scheme: dark)');
+            this._mql.addEventListener('change', () => {
+                if (this.themeMode === 'system') this.applyTheme();
+            });
+            this.applyTheme();
+        },
+        setTheme(mode) {
+            this.themeMode = mode;
+            try {
+                localStorage.setItem('sereno-theme', mode);
+            } catch (e) {
+                /* modo privado / sin storage: aplica igual, sin persistir */
+            }
+            this.applyTheme();
+        },
+        applyTheme() {
+            const dark = this.themeMode === 'dark'
+                || (this.themeMode === 'system' && this._mql && this._mql.matches);
+            this.effectiveDark = dark;
+            document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        },
+
         // ---- Formato (es-MX). Los decimales llegan como string de la API: nunca aritmética en JS. ----
         money(value) {
             const number = typeof value === 'string' ? parseFloat(value) : value;
@@ -78,6 +111,7 @@ document.addEventListener('alpine:init', () => {
     // Layout principal (páginas internas)
     Alpine.data('layout', () => ({
         async init() {
+            Alpine.store('app').initTheme();
             await Alpine.store('app').load();
         },
         async logout() {
@@ -94,6 +128,7 @@ document.addEventListener('alpine:init', () => {
     Alpine.data('authShell', () => ({
         boot: null,
         async init() {
+            Alpine.store('app').initTheme();
             this.boot = await Api.bootstrap();
             Alpine.store('app').applyBranding(this.boot);
             Alpine.store('app').ready = true;

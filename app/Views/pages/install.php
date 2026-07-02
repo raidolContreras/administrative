@@ -1,17 +1,17 @@
 <?php /* Instalador de primera ejecución (se autodesactiva cuando ya existe un usuario) */ ?>
 <div class="w-full max-w-lg" x-data="installPage" x-cloak x-show="$store.app.ready">
     <div class="card p-6">
-        <h2 class="text-base font-semibold text-slate-900">Instalación inicial</h2>
-        <p class="mt-1 text-sm text-slate-500">Configura la base de datos y crea el primer administrador.</p>
+        <h2 class="text-base font-semibold text-strong">Instalación inicial</h2>
+        <p class="mt-1 text-sm text-muted">Configura la base de datos y crea el primer administrador.</p>
 
         <!-- Requisitos -->
-        <div class="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-3">
-            <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Requisitos del servidor</p>
+        <div class="mt-4 rounded-lg border border-line bg-subtle p-3">
+            <p class="text-xs font-semibold uppercase tracking-wide text-muted">Requisitos del servidor</p>
             <ul class="mt-2 space-y-1 text-sm">
                 <template x-for="check in checks" :key="check.label">
                     <li class="flex items-center gap-2">
                         <span x-text="check.ok ? '✅' : '❌'"></span>
-                        <span :class="check.ok ? 'text-slate-600' : 'font-semibold text-red-600'" x-text="check.label"></span>
+                        <span :class="check.ok ? 'text-muted' : 'font-semibold text-danger'" x-text="check.label"></span>
                     </li>
                 </template>
             </ul>
@@ -25,7 +25,7 @@
                 <p class="field-error" x-show="err('app_name')" x-text="err('app_name')"></p>
             </div>
 
-            <p class="border-t border-slate-100 pt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">Base de datos MySQL</p>
+            <p class="border-t border-line pt-4 text-xs font-semibold uppercase tracking-wide text-muted">Base de datos MySQL</p>
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                     <label class="label">Servidor</label>
@@ -54,7 +54,7 @@
                 </div>
             </div>
 
-            <p class="border-t border-slate-100 pt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">Primer administrador</p>
+            <p class="border-t border-line pt-4 text-xs font-semibold uppercase tracking-wide text-muted">Primer administrador</p>
             <div>
                 <label class="label">Nombre</label>
                 <input type="text" class="input" :class="err('admin_name') && 'input-error'" x-model="form.admin_name" required>
