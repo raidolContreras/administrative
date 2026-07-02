@@ -19,13 +19,22 @@ document.addEventListener('alpine:init', () => {
         dot: 'M12 9.75a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z',
     };
 
+    // Aclara un color hex mezclándolo con blanco (para derivar el 2º color del degradado)
+    const lighten = (hex, pct) => {
+        const m = /^#?([0-9a-f]{6})$/i.exec(String(hex).trim());
+        if (!m) return hex;
+        const n = parseInt(m[1], 16);
+        const mix = (c) => Math.round(c + (255 - c) * pct);
+        const r = mix((n >> 16) & 255), g = mix((n >> 8) & 255), b = mix(n & 255);
+        return '#' + ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1);
+    };
+
     Alpine.store('app', {
         ready: false,
         user: null,
         menu: [],
         settings: {},
         appName: '',
-        sidebarOpen: false,
 
         icon(name) {
             return ICONS[name] || ICONS.dot;
@@ -92,8 +101,13 @@ document.addEventListener('alpine:init', () => {
         applyBranding(boot) {
             this.settings = boot.settings || {};
             this.appName = (boot.app && boot.app.name) || 'Panel';
-            if (this.settings.primary_color) {
-                document.documentElement.style.setProperty('--brand', this.settings.primary_color);
+            // Colores de marca configurables por el admin (Configuración).
+            // Si no hay secundario, se deriva aclarando el primario (degradado siempre armónico).
+            const primary = this.settings.primary_color;
+            if (primary) {
+                document.documentElement.style.setProperty('--brand', primary);
+                const secondary = this.settings.secondary_color || lighten(primary, 0.3);
+                document.documentElement.style.setProperty('--brand-2', secondary);
             }
             document.title = this.appName;
         },
@@ -110,6 +124,7 @@ document.addEventListener('alpine:init', () => {
 
     // Layout principal (páginas internas)
     Alpine.data('layout', () => ({
+        moreOpen: false, // hoja "Más" de la barra inferior (móvil)
         async init() {
             Alpine.store('app').initTheme();
             await Alpine.store('app').load();

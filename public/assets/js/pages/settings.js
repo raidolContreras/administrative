@@ -2,10 +2,24 @@ document.addEventListener('alpine:init', () => {
     'use strict';
 
     Alpine.data('settingsPage', () => ({
-        values: { app_name: '', primary_color: '#0284c7', currency: 'MXN' },
+        values: { app_name: '', primary_color: '#6366f1', secondary_color: '#8b5cf6', currency: 'MXN' },
         logoPreview: '',
         logoFile: null,
         saving: false,
+
+        // Paletas sugeridas por giro de negocio (primario → secundario del degradado)
+        presets: [
+            { name: 'Índigo', a: '#6366f1', b: '#8b5cf6' },
+            { name: 'Océano', a: '#0284c7', b: '#22d3ee' },
+            { name: 'Salvia', a: '#0fa598', b: '#34d399' },
+            { name: 'Brasa', a: '#ea5a0c', b: '#f59e0b' },
+            { name: 'Rosa', a: '#db2777', b: '#f472b6' },
+            { name: 'Grafito', a: '#334155', b: '#64748b' },
+        ],
+        applyPreset(p) {
+            this.values.primary_color = p.a;
+            this.values.secondary_color = p.b;
+        },
 
         async init() {
             try {

@@ -35,8 +35,7 @@ use Core\View;
             <img x-show="$store.app.settings.logo_path" :src="Api.base + ($store.app.settings.logo_path || '')"
                  class="h-14 w-14 rounded-xl object-cover shadow" alt="">
             <div x-show="!$store.app.settings.logo_path"
-                 class="flex h-14 w-14 items-center justify-center rounded-xl text-xl font-bold text-white shadow"
-                 style="background-color: var(--brand)"
+                 class="bg-brand-grad flex h-14 w-14 items-center justify-center rounded-2xl text-xl font-bold text-white shadow"
                  x-text="($store.app.appName || 'P').charAt(0).toUpperCase()"></div>
             <h1 class="text-lg font-semibold text-strong" x-text="$store.app.appName"></h1>
         </div>

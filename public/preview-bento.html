@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Muestra · Bento Grid</title>
+<style>
+@font-face{font-family:"Inter";font-weight:100 900;font-display:swap;src:url("/assets/fonts/inter-latin-wght-normal.woff2") format("woff2")}
+:root{
+    --bg:#f5f6f9;--surface:#ffffff;--line:#e7e9ee;--text:#0f1320;--body:#3d4457;--muted:#727a8c;--faint:#a5abba;
+    --accent:#6366f1;--accent-2:#8b5cf6;--accent-soft:#eef0fe;--success:#0f9d58;--warn:#c2740b;--danger:#e5484d;
+    --r:18px;--sh:0 1px 2px rgba(16,24,40,.05),0 6px 20px rgba(16,24,40,.05);color-scheme:light}
+[data-theme=dark]{--bg:#0a0c11;--surface:#141821;--line:#232935;--text:#f2f4f8;--body:#c4cbd8;--muted:#8b93a5;--faint:#5b6273;
+    --accent:#818cf8;--accent-2:#a78bfa;--accent-soft:#1e2233;--sh:0 6px 20px rgba(0,0,0,.4);color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Inter",system-ui,sans-serif;background:var(--bg);color:var(--body);-webkit-font-smoothing:antialiased;min-height:100vh}
+.note{position:fixed;inset:0 0 auto 0;z-index:99;background:var(--accent);color:#fff;text-align:center;font-size:12px;font-weight:600;padding:6px}
+.app{display:flex;min-height:100vh;padding-top:30px}
+.sidebar{width:246px;background:var(--surface);border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column;gap:22px;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:11px;padding:6px 8px}
+.brand .logo{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;display:grid;place-items:center;font-weight:700}
+.brand span{font-weight:700;color:var(--text);font-size:15px}
+.nav{display:flex;flex-direction:column;gap:3px}
+.nav a{display:flex;align-items:center;gap:11px;padding:10px 13px;border-radius:11px;color:var(--muted);font-size:14px;font-weight:500;text-decoration:none;cursor:pointer}
+.nav a:hover{background:var(--bg);color:var(--text)}
+.nav a.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.nav svg{width:19px;height:19px}
+.foot{margin-top:auto;font-size:11px;color:var(--faint);padding:8px 10px}
+.main{flex:1;padding:22px 28px 60px;min-width:0}
+.topbar{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.topbar h1{font-size:22px;color:var(--text);font-weight:700;flex:1;letter-spacing:-.01em}
+.search{flex:0 1 280px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 14px;color:var(--body);font-size:13px;outline:none;font-family:inherit}
+.iconbtn{width:38px;height:38px;border-radius:10px;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;color:var(--muted);cursor:pointer}
+.iconbtn:hover{color:var(--accent)}.iconbtn svg{width:19px;height:19px}
+.avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;display:grid;place-items:center;font-weight:600;font-size:14px}
+
+/* ===== BENTO GRID ===== */
+.bento{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+    grid-template-areas:
+    "hero hero kpi1 kpi2"
+    "hero hero kpi3 kpi4"
+    "form form table table"
+    "form form table table"
+    "status status table table"}
+@media(max-width:920px){.bento{grid-template-columns:repeat(2,1fr);grid-template-areas:
+    "hero hero" "kpi1 kpi2" "kpi3 kpi4" "form form" "table table" "status status"}}
+.cell{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--sh)}
+.hero{grid-area:hero;background:linear-gradient(140deg,var(--accent),var(--accent-2));border:0;color:#fff;display:flex;flex-direction:column;justify-content:space-between}
+.kpi1{grid-area:kpi1}.kpi2{grid-area:kpi2}.kpi3{grid-area:kpi3}.kpi4{grid-area:kpi4}
+.form{grid-area:form}.table{grid-area:table}.status{grid-area:status}
+.hero .lbl{font-size:13px;font-weight:600;opacity:.9}
+.hero .big{font-size:38px;font-weight:800;letter-spacing:-.02em;margin-top:4px;font-variant-numeric:tabular-nums}
+.hero .sub{font-size:13px;opacity:.9;margin-top:2px}
+.chart{display:flex;align-items:flex-end;gap:9px;height:80px;margin-top:18px}
+.chart span{flex:1;background:rgba(255,255,255,.35);border-radius:6px 6px 0 0;min-height:8px}
+.chart span.hot{background:#fff}
+.kpi .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600}
+.kpi .val{font-size:26px;font-weight:800;color:var(--text);margin-top:8px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.kpi .delta{font-size:12px;font-weight:600;margin-top:4px}.up{color:var(--success)}.down{color:var(--danger)}
+.cell h2{font-size:14px;color:var(--text);font-weight:700;margin-bottom:16px}
+.field{margin-bottom:14px}.field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px}
+.control{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 13px;color:var(--text);font-size:14px;outline:none;font-family:inherit}
+.control:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 20%,transparent)}
+.control.err{border-color:var(--danger)}.errmsg{color:var(--danger);font-size:12px;margin-top:6px}
+.btn{border:1px solid transparent;border-radius:10px;padding:10px 18px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.btn.primary{background:var(--accent);color:#fff}.btn.primary:hover{filter:brightness(1.08)}
+.btn.sec{background:var(--bg);border-color:var(--line);color:var(--body)}
+.btn.danger{background:var(--danger);color:#fff}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.badge{display:inline-flex;padding:3px 11px;border-radius:999px;font-size:12px;font-weight:600}
+.badge.green{background:color-mix(in srgb,var(--success) 12%,var(--surface));color:var(--success)}
+.badge.amber{background:color-mix(in srgb,var(--warn) 14%,var(--surface));color:var(--warn)}
+.badge.red{background:color-mix(in srgb,var(--danger) 12%,var(--surface));color:var(--danger)}
+.list{display:flex;flex-direction:column}
+.li{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.li:last-child{border-bottom:0}
+.li .pic{width:36px;height:36px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700;font-size:13px;flex-shrink:0}
+.li .nm{font-size:14px;color:var(--text);font-weight:600}.li .mt{font-size:12px;color:var(--muted)}
+.li .amt{margin-left:auto;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;font-size:14px}
+</style></head>
+<body>
+<div class="note">BENTO GRID (mosaico de tarjetas de distintos tamaños) · moderno y organizado · ☀︎/☾ arriba a la derecha</div>
+<div class="app">
+    <aside class="sidebar">
+        <div class="brand"><div class="logo">V</div><span>VetSalud</span></div>
+        <nav class="nav">
+            <a class="active"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10.5 12 3l9 7.5M5 9.5V20h5v-6h4v6h5V9.5"/></svg>Inicio</a>
+            <a><svg fill="none" viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16 20a4 4 0 00-8 0M12 12a4 4 0 100-8 4 4 0 000 8z"/></svg>Clientes</a>
+            <a><svg fill="none" viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20s-7-4.5-7-10a3.5 3.5 0 017-1 3.5 3.5 0 017 1c0 5.5-7 10-7 10z"/></svg>Mascotas</a>
+            <a><svg fill="none" viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M8 3v3m8-3v3M5 6h14v14H5z"/></svg>Citas</a>
+            <a><svg fill="none" viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9a3 3 0 100 6 3 3 0 000-6zM4 12h2m12 0h2M12 4v2m0 12v2"/></svg>Ajustes</a>
+        </nav>
+        <div class="foot">Sesión activa · Oscar</div>
+    </aside>
+    <main class="main">
+        <div class="topbar"><h1>Panel</h1><input class="search" placeholder="Buscar…">
+            <button class="iconbtn" id="tgl"><svg id="ico" fill="none" viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2m0 14v2m9-9h-2M5 12H3m14.5-6.5-1.5 1.5M7 17l-1.5 1.5m0-13L7 7m10 10 1.5 1.5M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg></button>
+            <div class="avatar">O</div></div>
+
+        <div class="bento">
+            <!-- Hero -->
+            <div class="hero cell">
+                <div><div class="lbl">Ingresos del mes</div><div class="big">$84,320</div><div class="sub">▲ 21% vs. mes anterior</div></div>
+                <div class="chart"><span style="height:40%"></span><span style="height:62%"></span><span style="height:48%"></span><span style="height:78%"></span><span style="height:66%"></span><span style="height:92%" class="hot"></span></div>
+            </div>
+            <!-- KPIs -->
+            <div class="kpi1 kpi cell"><div class="lbl">Clientes</div><div class="val">1,284</div><div class="delta up">▲ 12%</div></div>
+            <div class="kpi2 kpi cell"><div class="lbl">Mascotas</div><div class="val">2,057</div><div class="delta up">▲ 8%</div></div>
+            <div class="kpi3 kpi cell"><div class="lbl">Citas hoy</div><div class="val">38</div><div class="delta down">▼ 3%</div></div>
+            <div class="kpi4 kpi cell"><div class="lbl">Satisfacción</div><div class="val">4.8★</div><div class="delta up">▲ 0.2</div></div>
+
+            <!-- Form -->
+            <div class="form cell"><h2>Registrar cliente</h2>
+                <div class="field"><label>Nombre completo</label><input class="control" placeholder="Ej. María González"></div>
+                <div class="field"><label>Correo</label><input class="control" placeholder="correo@ejemplo.com"></div>
+                <div class="field"><label>Teléfono</label><input class="control err" value="55-XXXX"><div class="errmsg">Teléfono inválido</div></div>
+                <div class="row" style="margin-top:4px"><button class="btn primary">Guardar</button><button class="btn sec">Cancelar</button></div>
+            </div>
+
+            <!-- Tabla / lista -->
+            <div class="table cell"><h2>Clientes recientes</h2>
+                <div class="list">
+                    <div class="li"><div class="pic">MG</div><div><div class="nm">María González</div><div class="mt">Firulais · 02/06</div></div><span class="badge green" style="margin-left:auto">Pagado</span><span class="amt" style="margin-left:14px">$1,250</span></div>
+                    <div class="li"><div class="pic">JP</div><div><div class="nm">Juan Pérez</div><div class="mt">Michi · 28/05</div></div><span class="badge amber" style="margin-left:auto">Pendiente</span><span class="amt" style="margin-left:14px">$820</span></div>
+                    <div class="li"><div class="pic">AR</div><div><div class="nm">Ana Ruiz</div><div class="mt">Rocky · 15/05</div></div><span class="badge red" style="margin-left:auto">Vencido</span><span class="amt" style="margin-left:14px">$3,400</span></div>
+                    <div class="li"><div class="pic">LT</div><div><div class="nm">Luis Torres</div><div class="mt">Nube · 10/05</div></div><span class="badge green" style="margin-left:auto">Pagado</span><span class="amt" style="margin-left:14px">$540</span></div>
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div class="status cell"><h2>Estado de cuentas</h2>
+                <div class="row"><span class="badge green">Pagado</span><span class="badge amber">Pendiente</span><span class="badge red">Vencido</span>
+                    <div style="flex:1"></div><button class="btn danger">Eliminar seleccionados</button></div>
+            </div>
+        </div>
+    </main>
+</div>
+<script>
+const S='M12 3v2m0 14v2m9-9h-2M5 12H3m14.5-6.5-1.5 1.5M7 17l-1.5 1.5m0-13L7 7m10 10 1.5 1.5M12 8a4 4 0 100 8 4 4 0 000-8z',Mo='M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z';
+document.getElementById('tgl').onclick=()=>{const h=document.documentElement,d=h.dataset.theme==='dark';h.dataset.theme=d?'light':'dark';document.getElementById('ico').innerHTML='<path stroke-linecap="round" stroke-linejoin="round" d="'+(d?S:Mo)+'"/>'};
+</script>
+</body></html>

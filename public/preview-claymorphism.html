@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Muestra · Claymorphism</title>
+<style>
+@font-face{font-family:"Inter";font-weight:100 900;font-display:swap;src:url("/assets/fonts/inter-latin-wght-normal.woff2") format("woff2")}
+:root{
+    --bg:#eae6ff;--surface:#f5f2ff;--text:#2d2a45;--body:#544f77;--muted:#847ea6;--faint:#aaa4c8;
+    --accent:#7c5cff;--mint:#38d39f;--peach:#ff9a62;--pink:#ff6fb5;--warn:#f5a623;--danger:#ff5d6c;--success:#2fbf8f;
+    --r:26px;
+    --clay:8px 8px 22px rgba(120,100,200,.28), inset -4px -4px 10px rgba(150,130,220,.25), inset 5px 5px 10px rgba(255,255,255,.85);
+    --clay-sm:5px 5px 14px rgba(120,100,200,.28), inset -3px -3px 7px rgba(150,130,220,.22), inset 3px 3px 7px rgba(255,255,255,.8);
+    color-scheme:light}
+[data-theme=dark]{--bg:#211f38;--surface:#2a2848;--text:#f0eeff;--body:#c7c2e6;--muted:#948fbe;--faint:#6b6790;
+    --accent:#a58bff;
+    --clay:8px 8px 22px rgba(0,0,0,.4), inset -4px -4px 10px rgba(0,0,0,.35), inset 5px 5px 10px rgba(255,255,255,.07);
+    --clay-sm:5px 5px 14px rgba(0,0,0,.4), inset -3px -3px 7px rgba(0,0,0,.3), inset 3px 3px 7px rgba(255,255,255,.06);
+    color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Inter",system-ui,sans-serif;background:var(--bg);color:var(--body);-webkit-font-smoothing:antialiased;min-height:100vh}
+.note{position:fixed;inset:0 0 auto 0;z-index:99;background:var(--accent);color:#fff;text-align:center;font-size:12px;font-weight:700;padding:6px}
+.app{display:flex;min-height:100vh;padding-top:30px}
+.sidebar{width:252px;padding:24px 18px;display:flex;flex-direction:column;gap:26px;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:12px;padding:4px}
+.brand .logo{width:46px;height:46px;border-radius:16px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:800;font-size:19px;box-shadow:var(--clay-sm)}
+.brand span{font-weight:800;color:var(--text);font-size:16px}
+.nav{display:flex;flex-direction:column;gap:12px}
+.nav a{display:flex;align-items:center;gap:13px;padding:13px 17px;border-radius:18px;color:var(--muted);font-size:14px;font-weight:700;text-decoration:none;cursor:pointer;background:var(--bg)}
+.nav a:hover{color:var(--text)}
+.nav a.active{color:#fff;background:var(--accent);box-shadow:var(--clay-sm)}
+.nav svg{width:20px;height:20px}
+.foot{margin-top:auto;font-size:11px;color:var(--faint);text-align:center;padding:8px}
+.main{flex:1;padding:22px 30px 60px;min-width:0}
+.topbar{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+.topbar h1{font-size:24px;color:var(--text);font-weight:800;flex:1}
+.search{flex:0 1 300px;background:var(--bg);border:0;border-radius:999px;padding:13px 20px;color:var(--body);font-size:13px;outline:none;font-family:inherit;box-shadow:var(--clay-sm)}
+.iconbtn{width:48px;height:48px;border-radius:50%;background:var(--bg);border:0;display:grid;place-items:center;color:var(--accent);cursor:pointer;box-shadow:var(--clay-sm)}
+.iconbtn svg{width:20px;height:20px}
+.avatar{width:48px;height:48px;border-radius:50%;background:var(--pink);color:#fff;display:grid;place-items:center;font-weight:800;box-shadow:var(--clay-sm)}
+.grid{display:grid;gap:22px}.tiles{grid-template-columns:repeat(4,1fr);margin-bottom:26px}
+@media(max-width:900px){.tiles{grid-template-columns:repeat(2,1fr)}}
+.tile{background:var(--surface);border-radius:var(--r);padding:22px;box-shadow:var(--clay)}
+.tile .ico{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;margin-bottom:14px;color:#fff;box-shadow:var(--clay-sm)}
+.tile .ico svg{width:23px;height:23px}
+.i1{background:var(--accent)}.i2{background:var(--mint)}.i3{background:var(--peach)}.i4{background:var(--pink)}
+.tile .lbl{font-size:12.5px;color:var(--muted);font-weight:700}
+.tile .val{font-size:29px;font-weight:800;color:var(--text);margin-top:5px;font-variant-numeric:tabular-nums}
+.card{background:var(--surface);border-radius:var(--r);padding:26px;box-shadow:var(--clay)}
+.card h2{font-size:16px;color:var(--text);font-weight:800;margin-bottom:20px}
+.two{grid-template-columns:1.4fr 1fr;align-items:start}@media(max-width:900px){.two{grid-template-columns:1fr}}
+.field{margin-bottom:17px}.field label{display:block;font-size:12.5px;font-weight:700;color:var(--muted);margin-bottom:8px}
+.control{width:100%;background:var(--bg);border:0;border-radius:16px;padding:13px 16px;color:var(--text);font-size:14px;outline:none;font-family:inherit;box-shadow:var(--clay-sm)}
+.control:focus{box-shadow:var(--clay-sm),0 0 0 3px color-mix(in srgb,var(--accent) 40%,transparent)}
+.control.err{box-shadow:var(--clay-sm),0 0 0 3px color-mix(in srgb,var(--danger) 55%,transparent)}
+.errmsg{color:var(--danger);font-size:12px;margin-top:7px;font-weight:600}
+.btn{border:0;border-radius:16px;padding:13px 24px;font-size:14px;font-weight:800;font-family:inherit;cursor:pointer;background:var(--surface);color:var(--body);box-shadow:var(--clay-sm);display:inline-flex;align-items:center;gap:7px}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.danger{background:var(--danger);color:#fff}
+.btn:active{transform:translateY(1px)}
+.row{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.badge{display:inline-flex;padding:6px 14px;border-radius:999px;font-size:12px;font-weight:800;color:#fff}
+.badge.green{background:var(--success)}.badge.amber{background:var(--warn)}.badge.red{background:var(--danger)}
+.tablewrap{background:var(--surface);border-radius:var(--r);padding:14px 10px;box-shadow:var(--clay)}
+table{width:100%;border-collapse:separate;border-spacing:0 8px;font-size:14px}
+th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:800;padding:6px 18px}
+td{padding:15px 18px;color:var(--body);background:var(--bg)}
+td:first-child{border-radius:14px 0 0 14px}td:last-child{border-radius:0 14px 14px 0}
+.section-title{font-size:15px;color:var(--text);font-weight:800;margin:34px 0 16px}
+.modal{background:var(--surface);border-radius:var(--r);padding:26px;box-shadow:var(--clay)}
+.modal h3{font-size:16px;color:var(--text);font-weight:800}.modal p{font-size:14px;color:var(--muted);margin:9px 0 20px}
+</style></head>
+<body>
+<div class="note">CLAYMORPHISM (3D "plastilina", colorido y juguetón) · amigable y llamativo · ☀︎/☾ arriba a la derecha</div>
+<div class="app">
+    <aside class="sidebar">
+        <div class="brand"><div class="logo">V</div><span>VetSalud</span></div>
+        <nav class="nav">
+            <a class="active"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10.5 12 3l9 7.5M5 9.5V20h5v-6h4v6h5V9.5"/></svg>Inicio</a>
+            <a><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16 20a4 4 0 00-8 0M12 12a4 4 0 100-8 4 4 0 000 8z"/></svg>Clientes</a>
+            <a><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20s-7-4.5-7-10a3.5 3.5 0 017-1 3.5 3.5 0 017 1c0 5.5-7 10-7 10z"/></svg>Mascotas</a>
+            <a><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M8 3v3m8-3v3M5 6h14v14H5z"/></svg>Citas</a>
+            <a><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9a3 3 0 100 6 3 3 0 000-6zM4 12h2m12 0h2M12 4v2m0 12v2"/></svg>Ajustes</a>
+        </nav>
+        <div class="foot">Sesión activa · Oscar</div>
+    </aside>
+    <main class="main">
+        <div class="topbar"><h1>Panel</h1><input class="search" placeholder="Buscar…">
+            <button class="iconbtn" id="tgl"><svg id="ico" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2m0 14v2m9-9h-2M5 12H3m14.5-6.5-1.5 1.5M7 17l-1.5 1.5m0-13L7 7m10 10 1.5 1.5M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg></button>
+            <div class="avatar">O</div></div>
+        <div class="grid tiles">
+            <div class="tile"><div class="ico i1"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16 20a4 4 0 00-8 0M12 12a4 4 0 100-8 4 4 0 000 8z"/></svg></div><div class="lbl">Clientes</div><div class="val">1,284</div></div>
+            <div class="tile"><div class="ico i2"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20s-7-4.5-7-10a3.5 3.5 0 017-1 3.5 3.5 0 017 1c0 5.5-7 10-7 10z"/></svg></div><div class="lbl">Mascotas</div><div class="val">2,057</div></div>
+            <div class="tile"><div class="ico i3"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M8 3v3m8-3v3M5 6h14v14H5z"/></svg></div><div class="lbl">Citas hoy</div><div class="val">38</div></div>
+            <div class="tile"><div class="ico i4"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v18M8 7h5a2.5 2.5 0 010 5H9a2.5 2.5 0 000 5h6"/></svg></div><div class="lbl">Ingresos</div><div class="val">$84,320</div></div>
+        </div>
+        <div class="grid two">
+            <div class="card"><h2>Registrar cliente</h2>
+                <div class="field"><label>Nombre completo</label><input class="control" placeholder="Ej. María González"></div>
+                <div class="grid" style="grid-template-columns:1fr 1fr;gap:14px">
+                    <div class="field"><label>Correo</label><input class="control" placeholder="correo@ejemplo.com"></div>
+                    <div class="field"><label>Teléfono</label><input class="control err" value="55-XXXX"><div class="errmsg">Teléfono inválido</div></div></div>
+                <div class="row" style="margin-top:6px"><button class="btn primary">Guardar</button><button class="btn">Cancelar</button><button class="btn danger">Eliminar</button></div></div>
+            <div class="card"><h2>Estado</h2>
+                <div class="row" style="margin-bottom:18px"><span class="badge green">Pagado</span><span class="badge amber">Pendiente</span><span class="badge red">Vencido</span></div>
+                <div class="modal"><h3>Confirmar acción</h3><p>¿Eliminar el registro? Esta acción no se puede deshacer.</p><div class="row"><button class="btn danger">Sí, eliminar</button><button class="btn">Cancelar</button></div></div></div>
+        </div>
+        <div class="section-title">Clientes recientes</div>
+        <div class="tablewrap"><table>
+            <thead><tr><th>Cliente</th><th>Mascota</th><th>Última visita</th><th>Estado</th><th style="text-align:right">Monto</th></tr></thead>
+            <tbody>
+                <tr><td>María González</td><td>Firulais</td><td>02/06/2026</td><td><span class="badge green">Pagado</span></td><td style="text-align:right;font-variant-numeric:tabular-nums">$1,250.00</td></tr>
+                <tr><td>Juan Pérez</td><td>Michi</td><td>28/05/2026</td><td><span class="badge amber">Pendiente</span></td><td style="text-align:right;font-variant-numeric:tabular-nums">$820.00</td></tr>
+                <tr><td>Ana Ruiz</td><td>Rocky</td><td>15/05/2026</td><td><span class="badge red">Vencido</span></td><td style="text-align:right;font-variant-numeric:tabular-nums">$3,400.00</td></tr>
+                <tr><td>Luis Torres</td><td>Nube</td><td>10/05/2026</td><td><span class="badge green">Pagado</span></td><td style="text-align:right;font-variant-numeric:tabular-nums">$540.00</td></tr>
+            </tbody></table></div>
+    </main>
+</div>
+<script>
+const S='M12 3v2m0 14v2m9-9h-2M5 12H3m14.5-6.5-1.5 1.5M7 17l-1.5 1.5m0-13L7 7m10 10 1.5 1.5M12 8a4 4 0 100 8 4 4 0 000-8z',Mo='M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z';
+document.getElementById('tgl').onclick=()=>{const h=document.documentElement,d=h.dataset.theme==='dark';h.dataset.theme=d?'light':'dark';document.getElementById('ico').innerHTML='<path stroke-linecap="round" stroke-linejoin="round" d="'+(d?S:Mo)+'"/>'};
+</script>
+</body></html>

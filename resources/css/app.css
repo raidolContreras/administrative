@@ -9,9 +9,10 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 /* ============================================================================
-   SERENO · Sistema de diseño
+   SERENO v2 · Sistema de diseño estilo Bento
    Capa 1 primitivos → Capa 2 semánticos (se invierten en oscuro) → componentes.
-   Rebranding por cliente = fijar --brand (lo hace el JS desde settings) + --radius.
+   Rebranding por cliente = --brand y --brand-2 (los fija el admin en
+   Configuración; el JS los aplica en runtime desde settings).
    ========================================================================== */
 
 /* ---- Tipografía self-hosted: Inter variable (sin CDN) ---- */
@@ -37,53 +38,40 @@
 
 /* ---- Capa 1 + 2: primitivos y semánticos (claro) ---- */
 :root {
-    /* Neutros "Tinta" (frío elegante) */
-    --ink-0: #ffffff;
-    --ink-50: #f6f7f9;
-    --ink-100: #edeff2;
-    --ink-200: #e1e4e9;
-    --ink-300: #c9ced6;
-    --ink-400: #98a0ab;
-    --ink-500: #6a727d;
-    --ink-600: #4b525c;
-    --ink-700: #343a42;
-    --ink-800: #22272d;
-    --ink-900: #171b20;
-    --ink-950: #0f1215;
-    --ink-1000: #090b0d;
-
-    /* Marca: semilla (la sobrescribe el cliente vía JS) y acento de primer plano */
-    --brand: #0284c7;
+    /* Marca: el admin puede cambiar ambos desde Configuración (JS runtime) */
+    --brand: #6366f1;
+    --brand-2: #8b5cf6;
     --accent: var(--brand);
     --on-brand: #ffffff;
 
-    /* Superficies y texto (semánticos) */
-    --canvas: var(--ink-50);
-    --surface: var(--ink-0);
-    --surface-2: var(--ink-100);
-    --subtle: #f1f3f5;
-    --line: var(--ink-200);
-    --strong: var(--ink-900);
-    --body: var(--ink-700);
-    --muted: var(--ink-500);
-    --faint: var(--ink-400);
+    /* Superficies y texto */
+    --canvas: #f5f6f9;
+    --surface: #ffffff;
+    --surface-2: #eef0f4;
+    --subtle: #f0f1f5;
+    --line: #e7e9ee;
+    --strong: #0f1320;
+    --body: #3d4457;
+    --muted: #727a8c;
+    --faint: #a5abba;
 
-    /* Estado (los "soft" se calculan sobre --surface, así se adaptan al tema) */
-    --success: #16a34a;
+    /* Estado (los "soft" se calculan sobre --surface → se adaptan al tema) */
+    --success: #0f9d58;
     --warning: #b4740b;
-    --danger: #dc2626;
+    --danger: #e5484d;
     --info: #2563eb;
     --success-soft: color-mix(in srgb, var(--success) 12%, var(--surface));
     --warning-soft: color-mix(in srgb, var(--warning) 14%, var(--surface));
     --danger-soft: color-mix(in srgb, var(--danger) 11%, var(--surface));
     --info-soft: color-mix(in srgb, var(--info) 12%, var(--surface));
+    --accent-soft: color-mix(in srgb, var(--accent) 12%, var(--surface));
 
     /* Forma, foco, elevación */
-    --radius: 10px;
-    --ring: color-mix(in srgb, var(--brand) 35%, transparent);
-    --shadow-1: 0 1px 2px rgb(16 24 40 / 0.04), 0 1px 3px rgb(16 24 40 / 0.06);
-    --shadow-2: 0 4px 16px rgb(16 24 40 / 0.09);
-    --shadow-3: 0 24px 48px rgb(16 24 40 / 0.18);
+    --radius: 12px;
+    --ring: color-mix(in srgb, var(--brand) 30%, transparent);
+    --shadow-1: 0 1px 2px rgb(16 24 40 / 0.05), 0 8px 24px rgb(16 24 40 / 0.06);
+    --shadow-2: 0 10px 34px rgb(16 24 40 / 0.14);
+    --shadow-3: 0 24px 48px rgb(16 24 40 / 0.2);
     --scrim: color-mix(in srgb, #0b0e12 55%, transparent);
 
     color-scheme: light;
@@ -93,24 +81,24 @@
 [data-theme="dark"] {
     --accent: color-mix(in srgb, var(--brand) 72%, #ffffff); /* aclara la marca sobre fondo oscuro */
 
-    --canvas: #0f1215;
-    --surface: #171b20;
-    --surface-2: #22272d;
-    --subtle: #20252b;
-    --line: #2a3037;
-    --strong: #f3f5f7;
-    --body: #e7eaee;
-    --muted: #9aa2ad;
-    --faint: #6b7480;
+    --canvas: #0a0c11;
+    --surface: #141821;
+    --surface-2: #1c2130;
+    --subtle: #1b202b;
+    --line: #232935;
+    --strong: #f2f4f8;
+    --body: #c4cbd8;
+    --muted: #8b93a5;
+    --faint: #5b6273;
 
     --success: #34d399;
     --warning: #fbbf24;
     --danger: #f87171;
     --info: #60a5fa;
 
-    --shadow-1: none;
-    --shadow-2: 0 4px 16px rgb(0 0 0 / 0.35);
-    --shadow-3: 0 24px 48px rgb(0 0 0 / 0.5);
+    --shadow-1: 0 8px 24px rgb(0 0 0 / 0.45);
+    --shadow-2: 0 10px 34px rgb(0 0 0 / 0.5);
+    --shadow-3: 0 24px 48px rgb(0 0 0 / 0.55);
     --scrim: color-mix(in srgb, #000000 62%, transparent);
 
     color-scheme: dark;
@@ -134,6 +122,7 @@
     --color-faint: var(--faint);
 
     --color-brand: var(--brand);
+    --color-brand-2: var(--brand-2);
     --color-accent: var(--accent);
     --color-on-brand: var(--on-brand);
 
@@ -145,6 +134,7 @@
     --color-danger-soft: var(--danger-soft);
     --color-info: var(--info);
     --color-info-soft: var(--info-soft);
+    --color-accent-soft: var(--accent-soft);
 }
 
 /* ---- Base ---- */
@@ -182,23 +172,190 @@
 }
 
 /* ============================================================================
-   Componentes reutilizables (todos derivan de tokens → se adaptan a claro/oscuro)
+   Componentes (todos derivan de tokens → se adaptan a claro/oscuro y a la marca)
    ========================================================================== */
 @layer components {
-    /* ---- Botones ---- */
+    /* ---- Degradado de marca (logo, hero, avatares) ---- */
+    .bg-brand-grad {
+        background-image: linear-gradient(135deg, var(--brand), var(--brand-2));
+    }
+
+    /* ---- Sidebar isla (solo escritorio) ---- */
+    .rail {
+        display: none;
+    }
+    @media (min-width: 1024px) {
+        .rail {
+            display: flex;
+            flex-direction: column;
+            width: 240px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 1rem;
+            height: calc(100vh - 2rem);
+            height: calc(100dvh - 2rem);
+            margin: 1rem 0 1rem 1rem;
+            padding: 1.125rem 0.875rem;
+            background-color: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            box-shadow: var(--shadow-1);
+            overflow-y: auto;
+        }
+    }
+    .rail-link {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.6875rem 0.875rem;
+        border-radius: 12px;
+        color: var(--muted);
+        font-size: 0.875rem;
+        font-weight: 600;
+        transition: background-color 0.15s ease, color 0.15s ease;
+    }
+    .rail-link:hover {
+        background-color: var(--subtle);
+        color: var(--strong);
+    }
+    .rail-link-active,
+    .rail-link-active:hover {
+        background-color: var(--accent-soft);
+        color: var(--accent);
+    }
+
+    /* ---- Topbar pegajoso con blur ---- */
+    .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        padding: 0.75rem 1rem;
+        background-color: color-mix(in srgb, var(--canvas) 82%, transparent);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+    @media (min-width: 1024px) {
+        .topbar {
+            padding: 1rem 1.625rem 0.75rem;
+        }
+    }
+
+    /* ---- Barra de navegación inferior (solo móvil) ---- */
+    .bottomnav {
+        position: fixed;
+        left: 0.75rem;
+        right: 0.75rem;
+        bottom: 0.75rem;
+        z-index: 40;
+        display: flex;
+        justify-content: space-around;
+        gap: 0.25rem;
+        background-color: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        box-shadow: var(--shadow-2);
+        padding: 0.4rem;
+        padding-bottom: calc(0.4rem + env(safe-area-inset-bottom));
+    }
+    @media (min-width: 1024px) {
+        .bottomnav {
+            display: none;
+        }
+    }
+    .bottomnav-link {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        padding: 0.4rem 0;
+        border-radius: 14px;
+        color: var(--muted);
+        font-size: 10.5px;
+        font-weight: 600;
+        min-width: 0;
+    }
+    .bottomnav-link svg {
+        width: 22px;
+        height: 22px;
+    }
+    .bottomnav-link span {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding: 0 2px;
+    }
+    .bottomnav-link-active {
+        color: var(--accent);
+        background-color: var(--accent-soft);
+    }
+
+    /* ---- Bottom sheet (menú "Más" en móvil) ---- */
+    .sheet-panel {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 60;
+        background-color: var(--surface);
+        border: 1px solid var(--line);
+        border-bottom: 0;
+        border-radius: 24px 24px 0 0;
+        box-shadow: var(--shadow-3);
+        padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom));
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    .sheet-handle {
+        width: 42px;
+        height: 5px;
+        border-radius: 999px;
+        background-color: var(--line);
+        margin: 0 auto 0.875rem;
+    }
+
+    /* ---- Tarjeta hero (bento, degradado de marca) ---- */
+    .hero-card {
+        background-image: linear-gradient(140deg, var(--brand), var(--brand-2));
+        border-radius: calc(var(--radius) + 6px);
+        color: #ffffff;
+        padding: 1.375rem;
+        box-shadow: var(--shadow-1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 1rem;
+        min-height: 100%;
+    }
+
+    /* ---- Superficie / celda bento ---- */
+    .card {
+        background-color: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: calc(var(--radius) + 6px);
+        box-shadow: var(--shadow-1);
+    }
+
+    /* ---- Botones (táctiles: ≥44px de alto) ---- */
     .btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
         border-radius: var(--radius);
-        padding: 0.5rem 1rem;
+        padding: 0.625rem 1.125rem;
+        min-height: 2.75rem;
         font-size: 0.875rem;
         font-weight: 600;
         line-height: 1.25rem;
         border: 1px solid transparent;
         cursor: pointer;
-        transition: opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+        transition: opacity 0.15s ease, background-color 0.15s ease, border-color 0.15s ease,
+            filter 0.15s ease;
         white-space: nowrap;
     }
     .btn:disabled {
@@ -210,7 +367,7 @@
         color: var(--on-brand);
     }
     .btn-primary:hover:not(:disabled) {
-        opacity: 0.9;
+        filter: brightness(1.07);
     }
     .btn-secondary {
         background-color: var(--surface);
@@ -225,20 +382,24 @@
         color: #ffffff;
     }
     .btn-danger:hover:not(:disabled) {
-        opacity: 0.9;
+        filter: brightness(1.07);
     }
     .btn-icon {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 0.375rem;
-        border-radius: calc(var(--radius) - 2px);
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 11px;
+        background-color: var(--surface);
+        border: 1px solid var(--line);
         color: var(--muted);
+        cursor: pointer;
+        flex-shrink: 0;
         transition: background-color 0.15s ease, color 0.15s ease;
     }
     .btn-icon:hover {
-        background-color: var(--subtle);
-        color: var(--strong);
+        color: var(--accent);
     }
 
     /* ---- Formularios ---- */
@@ -246,17 +407,17 @@
         display: block;
         font-size: 0.8125rem;
         font-weight: 600;
-        color: var(--body);
+        color: var(--muted);
         margin-bottom: 0.375rem;
     }
     .input {
         display: block;
         width: 100%;
-        border-radius: var(--radius);
+        border-radius: 11px;
         border: 1px solid var(--line);
-        background-color: var(--surface);
-        padding: 0.5rem 0.75rem;
-        font-size: 0.875rem;
+        background-color: var(--canvas);
+        padding: 0.6875rem 0.8125rem;
+        font-size: 0.9375rem;
         color: var(--strong);
         outline: none;
         transition: border-color 0.15s ease, box-shadow 0.15s ease;
@@ -277,14 +438,6 @@
         margin-top: 0.25rem;
         font-size: 0.75rem;
         color: var(--muted);
-    }
-
-    /* ---- Superficie ---- */
-    .card {
-        background-color: var(--surface);
-        border: 1px solid var(--line);
-        border-radius: calc(var(--radius) + 2px);
-        box-shadow: var(--shadow-1);
     }
 
     /* ---- Badges / estado (tonal suave) ---- */
@@ -314,7 +467,7 @@
         color: var(--muted);
     }
     .badge-brand {
-        background-color: color-mix(in srgb, var(--accent) 14%, var(--surface));
+        background-color: var(--accent-soft);
         color: var(--accent);
     }
 
@@ -355,6 +508,31 @@
         color: var(--strong);
     }
 
+    /* ---- Filas de lista (actividad, bento) ---- */
+    .list-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.6875rem 0;
+        border-bottom: 1px solid var(--line);
+    }
+    .list-row:last-child {
+        border-bottom: 0;
+    }
+    .list-pic {
+        width: 38px;
+        height: 38px;
+        border-radius: 11px;
+        background-color: var(--accent-soft);
+        color: var(--accent);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.8125rem;
+        flex-shrink: 0;
+    }
+
     /* ---- Modales / overlays ---- */
     .modal-backdrop {
         position: fixed;
@@ -370,7 +548,7 @@
         background-color: var(--surface);
         color: var(--body);
         border: 1px solid var(--line);
-        border-radius: calc(var(--radius) + 4px);
+        border-radius: calc(var(--radius) + 8px);
         box-shadow: var(--shadow-3);
     }
 

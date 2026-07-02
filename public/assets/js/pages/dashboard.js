@@ -5,6 +5,7 @@ document.addEventListener('alpine:init', () => {
         stats: [],
         recent: [],
         loading: true,
+        today: new Date().toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
 
         async init() {
             try {

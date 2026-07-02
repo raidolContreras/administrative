@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Muestra · Neo-brutalismo</title>
+<style>
+@font-face{font-family:"Inter";font-weight:100 900;font-display:swap;src:url("/assets/fonts/inter-latin-wght-normal.woff2") format("woff2")}
+:root{
+    --bg:#fdf7e9;--surface:#ffffff;--ink:#141414;--text:#141414;--body:#141414;--muted:#5a5a5a;
+    --accent:#ffd23f;--pink:#ff90e8;--cyan:#7ae0ff;--lime:#c6f24e;--success:#00c853;--danger:#ff5252;
+    --bd:2.5px solid var(--ink);--sh:5px 5px 0 var(--ink);--sh-sm:3px 3px 0 var(--ink);color-scheme:light}
+[data-theme=dark]{--bg:#15150f;--surface:#1f1f18;--ink:#ffffff;--text:#f7f7f0;--body:#eaeadf;--muted:#a8a89a;
+    --accent:#ffd23f;--sh:5px 5px 0 var(--ink);--sh-sm:3px 3px 0 var(--ink);color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Inter",system-ui,sans-serif;background:var(--bg);color:var(--body);-webkit-font-smoothing:antialiased;min-height:100vh}
+.note{position:fixed;inset:0 0 auto 0;z-index:99;background:var(--ink);color:var(--bg);text-align:center;font-size:12px;font-weight:800;padding:7px;letter-spacing:.03em}
+.app{display:flex;min-height:100vh;padding-top:31px}
+.sidebar{width:250px;background:var(--surface);border-right:var(--bd);padding:22px 16px;display:flex;flex-direction:column;gap:22px;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:12px;padding:2px}
+.brand .logo{width:44px;height:44px;border:var(--bd);border-radius:8px;background:var(--accent);color:var(--ink);display:grid;place-items:center;font-weight:900;font-size:19px;box-shadow:var(--sh-sm)}
+.brand span{font-weight:900;color:var(--text);font-size:16px;letter-spacing:-.01em}
+.nav{display:flex;flex-direction:column;gap:10px}
+.nav a{display:flex;align-items:center;gap:12px;padding:11px 14px;border:var(--bd);border-radius:8px;color:var(--text);font-size:14px;font-weight:800;text-decoration:none;cursor:pointer;background:var(--surface)}
+.nav a:hover{box-shadow:var(--sh-sm);transform:translate(-1px,-1px)}
+.nav a.active{background:var(--accent);color:var(--ink);box-shadow:var(--sh-sm)}
+.nav svg{width:19px;height:19px}
+.foot{margin-top:auto;font-size:11px;color:var(--muted);font-weight:700;padding:8px 6px}
+.main{flex:1;padding:24px 30px 60px;min-width:0}
+.topbar{display:flex;align-items:center;gap:14px;margin-bottom:26px}
+.topbar h1{font-size:26px;color:var(--text);font-weight:900;flex:1;letter-spacing:-.02em}
+.search{flex:0 1 280px;background:var(--surface);border:var(--bd);border-radius:8px;padding:10px 14px;color:var(--text);font-size:13px;font-weight:600;outline:none;font-family:inherit}
+.search:focus{box-shadow:var(--sh-sm)}
+.iconbtn{width:44px;height:44px;border:var(--bd);border-radius:8px;background:var(--cyan);display:grid;place-items:center;color:var(--ink);cursor:pointer;box-shadow:var(--sh-sm)}
+.iconbtn:active{box-shadow:none;transform:translate(2px,2px)}.iconbtn svg{width:20px;height:20px}
+.avatar{width:44px;height:44px;border:var(--bd);border-radius:8px;background:var(--pink);color:var(--ink);display:grid;place-items:center;font-weight:900;box-shadow:var(--sh-sm)}
+.grid{display:grid;gap:20px}.tiles{grid-template-columns:repeat(4,1fr);margin-bottom:24px}
+@media(max-width:900px){.tiles{grid-template-columns:repeat(2,1fr)}}
+.tile{border:var(--bd);border-radius:10px;padding:20px;box-shadow:var(--sh);background:var(--surface)}
+.t1{background:var(--accent)}.t2{background:var(--lime)}.t3{background:var(--cyan)}.t4{background:var(--pink)}
+.tile .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink);font-weight:800}
+.tile .val{font-size:30px;font-weight:900;color:var(--ink);margin-top:6px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.tile .delta{font-size:12px;font-weight:800;margin-top:6px;color:var(--ink)}
+.card{border:var(--bd);border-radius:10px;padding:24px;box-shadow:var(--sh);background:var(--surface)}
+.card h2{font-size:16px;color:var(--text);font-weight:900;margin-bottom:18px;text-transform:uppercase;letter-spacing:-.01em}
+.two{grid-template-columns:1.4fr 1fr;align-items:start}@media(max-width:900px){.two{grid-template-columns:1fr}}
+.field{margin-bottom:16px}.field label{display:block;font-size:12px;font-weight:800;color:var(--text);margin-bottom:6px;text-transform:uppercase}
+.control{width:100%;background:var(--bg);border:var(--bd);border-radius:8px;padding:11px 14px;color:var(--text);font-size:14px;font-weight:600;outline:none;font-family:inherit}
+.control:focus{box-shadow:var(--sh-sm)}.control.err{background:color-mix(in srgb,var(--danger) 20%,var(--surface))}
+.errmsg{color:var(--danger);font-size:12px;margin-top:6px;font-weight:800}
+.btn{border:var(--bd);border-radius:8px;padding:11px 20px;font-size:14px;font-weight:900;font-family:inherit;cursor:pointer;background:var(--surface);color:var(--ink);box-shadow:var(--sh-sm);display:inline-flex;align-items:center;gap:7px;text-transform:uppercase;letter-spacing:.01em}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:var(--sh)}
+.btn:active{transform:translate(2px,2px);box-shadow:none}
+.btn.primary{background:var(--accent)}.btn.danger{background:var(--danger);color:#fff}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.badge{display:inline-flex;padding:4px 12px;border:var(--bd);border-radius:6px;font-size:12px;font-weight:800;color:var(--ink)}
+.badge.green{background:var(--success)}.badge.amber{background:var(--accent)}.badge.red{background:var(--danger);color:#fff}
+.tablewrap{border:var(--bd);border-radius:10px;overflow:hidden;box-shadow:var(--sh);background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink);font-weight:900;padding:13px 18px;background:var(--accent);border-bottom:var(--bd)}
+td{padding:13px 18px;color:var(--body);font-weight:600;border-bottom:2px solid var(--ink)}
+tbody tr:last-child td{border-bottom:0}tbody tr:hover td{background:color-mix(in srgb,var(--accent) 22%,var(--surface))}
+.section-title{font-size:15px;color:var(--text);font-weight:900;margin:32px 0 14px;text-transform:uppercase}
+.modal{border:var(--bd);border-radius:10px;padding:24px;box-shadow:var(--sh);background:var(--surface)}
+.modal h3{font-size:16px;color:var(--text);font-weight:900;text-transform:uppercase}.modal p{font-size:14px;color:var(--muted);margin:8px 0 20px;font-weight:600}
+</style></head>
+<body>
+<div class="note">NEO-BRUTALISMO (bordes duros, colores vivos, sombras planas) · audaz y con personalidad · ☀︎/☾ arriba a la derecha</div>
+<div class="app">
+    <aside class="sidebar">
+        <div class="brand"><div class="logo">V</div><span>VetSalud</span></div>
+        <nav class="nav">
+            <a class="active"><svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10.5 12 3l9 7.5M5 9.5V20h5v-6h4v6h5V9.5"/></svg>Inicio</a>
+            <a><svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16 20a4 4 0 00-8 0M12 12a4 4 0 100-8 4 4 0 000 8z"/></svg>Clientes</a>
+            <a><svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20s-7-4.5-7-10a3.5 3.5 0 017-1 3.5 3.5 0 017 1c0 5.5-7 10-7 10z"/></svg>Mascotas</a>
+            <a><svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M8 3v3m8-3v3M5 6h14v14H5z"/></svg>Citas</a>
+            <a><svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9a3 3 0 100 6 3 3 0 000-6zM4 12h2m12 0h2M12 4v2m0 12v2"/></svg>Ajustes</a>
+        </nav>
+        <div class="foot">Sesión activa · Oscar</div>
+    </aside>
+    <main class="main">
+        <div class="topbar"><h1>PANEL</h1><input class="search" placeholder="Buscar…">
+            <button class="iconbtn" id="tgl"><svg id="ico" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2m0 14v2m9-9h-2M5 12H3m14.5-6.5-1.5 1.5M7 17l-1.5 1.5m0-13L7 7m10 10 1.5 1.5M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg></button>
+            <div class="avatar">O</div></div>
+        <div class="grid tiles">
+            <div class="tile t1"><div class="lbl">Clientes</div><div class="val">1,284</div><div class="delta">▲ 12%</div></div>
+            <div class="tile t2"><div class="lbl">Mascotas</div><div class="val">2,057</div><div class="delta">▲ 8%</div></div>
+            <div class="tile t3"><div class="lbl">Citas hoy</div><div class="val">38</div><div class="delta">▼ 3%</div></div>
+            <div class="tile t4"><div class="lbl">Ingresos</div><div class="val">$84,320</div><div class="delta">▲ 21%</div></div>
+        </div>
+        <div class="grid two">
+            <div class="card"><h2>Registrar cliente</h2>
+                <div class="field"><label>Nombre completo</label><input class="control" placeholder="Ej. María González"></div>
+                <div class="grid" style="grid-template-columns:1fr 1fr;gap:14px">
+                    <div class="field"><label>Correo</label><input class="control" placeholder="correo@ejemplo.com"></div>
+                    <div class="field"><label>Teléfono</label><input class="control err" value="55-XXXX"><div class="errmsg">Teléfono inválido</div></div></div>
+                <div class="row" style="margin-top:6px"><button class="btn primary">Guardar</button><button class="btn">Cancelar</button><button class="btn danger">Eliminar</button></div></div>
+            <div class="card"><h2>Estado</h2>
+                <div class="row" style="margin-bottom:18px"><span class="badge green">Pagado</span><span class="badge amber">Pendiente</span><span class="badge red">Vencido</span></div>
+                <div class="modal"><h3>Confirmar</h3><p>¿Eliminar el registro? Esta acción no se puede deshacer.</p><div class="row"><button class="btn danger">Sí, eliminar</button><button class="btn">Cancelar</button></div></div></div>
+        </div>
+        <div class="section-title">Clientes recientes</div>
+        <div class="tablewrap"><table>
+            <thead><tr><th>Cliente</th><th>Mascota</th><th>Última visita</th><th>Estado</th><th style="text-align:right">Monto</th></tr></thead>
+            <tbody>
+                <tr><td>María González</td><td>Firulais</td><td>02/06/2026</td><td><span class="badge green">Pagado</span></td><td style="text-align:right;font-variant-numeric:tabular-nums">$1,250.00</td></tr>
+                <tr><td>Juan Pérez</td><td>Michi</td><td>28/05/2026</td><td><span class="badge amber">Pendiente</span></td><td style="text-align:right;font-variant-numeric:tabular-nums">$820.00</td></tr>
+                <tr><td>Ana Ruiz</td><td>Rocky</td><td>15/05/2026</td><td><span class="badge red">Vencido</span></td><td style="text-align:right;font-variant-numeric:tabular-nums">$3,400.00</td></tr>
+                <tr><td>Luis Torres</td><td>Nube</td><td>10/05/2026</td><td><span class="badge green">Pagado</span></td><td style="text-align:right;font-variant-numeric:tabular-nums">$540.00</td></tr>
+            </tbody></table></div>
+    </main>
+</div>
+<script>
+const S='M12 3v2m0 14v2m9-9h-2M5 12H3m14.5-6.5-1.5 1.5M7 17l-1.5 1.5m0-13L7 7m10 10 1.5 1.5M12 8a4 4 0 100 8 4 4 0 000-8z',Mo='M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z';
+document.getElementById('tgl').onclick=()=>{const h=document.documentElement,d=h.dataset.theme==='dark';h.dataset.theme=d?'light':'dark';document.getElementById('ico').innerHTML='<path stroke-linecap="round" stroke-linejoin="round" d="'+(d?S:Mo)+'"/>'};
+</script>
+</body></html>

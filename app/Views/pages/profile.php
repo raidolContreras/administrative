@@ -6,8 +6,7 @@
     </div>
 
     <div class="card flex items-center gap-4 p-6">
-        <span class="flex h-14 w-14 items-center justify-center rounded-full text-lg font-bold text-white"
-              style="background-color: var(--brand)"
+        <span class="bg-brand-grad flex h-14 w-14 items-center justify-center rounded-full text-lg font-bold text-white"
               x-text="$store.app.user ? $store.app.user.name.charAt(0).toUpperCase() : ''"></span>
         <div class="min-w-0">
             <p class="truncate font-semibold text-strong" x-text="$store.app.user ? $store.app.user.name : ''"></p>

@@ -11,24 +11,65 @@
             <input type="text" class="input" x-model="values.app_name" required maxlength="80">
         </div>
 
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-                <label class="label">Color principal</label>
-                <div class="flex items-center gap-3">
+        <!-- Colores de la marca (el admin puede cambiarlos cuando quiera) -->
+        <div>
+            <label class="label">Colores de la marca</label>
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div class="flex items-center gap-3 rounded-xl border border-line p-3">
                     <input type="color" class="h-10 w-14 cursor-pointer rounded-lg border border-line"
                            x-model="values.primary_color">
-                    <span class="text-sm text-muted" x-text="values.primary_color"></span>
+                    <div>
+                        <p class="text-sm font-semibold text-strong">Principal</p>
+                        <p class="text-xs text-muted" x-text="values.primary_color"></p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 rounded-xl border border-line p-3">
+                    <input type="color" class="h-10 w-14 cursor-pointer rounded-lg border border-line"
+                           x-model="values.secondary_color">
+                    <div>
+                        <p class="text-sm font-semibold text-strong">Secundario</p>
+                        <p class="text-xs text-muted">Degradados y detalles</p>
+                    </div>
                 </div>
             </div>
-            <div>
-                <label class="label">Moneda</label>
-                <select class="input" x-model="values.currency">
-                    <option value="MXN">Peso mexicano (MXN)</option>
-                    <option value="USD">Dólar (USD)</option>
-                    <option value="GTQ">Quetzal (GTQ)</option>
-                    <option value="COP">Peso colombiano (COP)</option>
-                </select>
+
+            <!-- Paletas sugeridas -->
+            <p class="mt-3 text-xs font-semibold text-muted">Paletas sugeridas</p>
+            <div class="mt-2 flex flex-wrap gap-2">
+                <template x-for="p in presets" :key="p.name">
+                    <button type="button"
+                            class="flex items-center gap-2 rounded-full border border-line py-1.5 pl-1.5 pr-3 text-xs font-semibold text-body hover:bg-subtle"
+                            @click="applyPreset(p)" :title="p.name">
+                        <span class="h-6 w-6 rounded-full"
+                              :style="'background-image: linear-gradient(135deg,' + p.a + ',' + p.b + ')'"></span>
+                        <span x-text="p.name"></span>
+                    </button>
+                </template>
             </div>
+
+            <!-- Vista previa en vivo -->
+            <div class="mt-3 overflow-hidden rounded-xl border border-line">
+                <div class="flex items-center justify-between p-4 text-white"
+                     :style="'background-image: linear-gradient(140deg,' + values.primary_color + ',' + values.secondary_color + ')'">
+                    <div>
+                        <p class="text-xs font-semibold opacity-90">Vista previa</p>
+                        <p class="text-xl font-extrabold tracking-tight" x-text="values.app_name || 'Tu negocio'"></p>
+                    </div>
+                    <span class="rounded-xl px-3.5 py-2 text-sm font-semibold"
+                          :style="'background-color:' + values.primary_color + '; box-shadow: 0 0 0 3px rgba(255,255,255,.35)'">Botón</span>
+                </div>
+            </div>
+            <p class="hint">Los colores se aplican a botones, menú, degradados y acentos en todo el sistema, al guardar.</p>
+        </div>
+
+        <div>
+            <label class="label">Moneda</label>
+            <select class="input" x-model="values.currency">
+                <option value="MXN">Peso mexicano (MXN)</option>
+                <option value="USD">Dólar (USD)</option>
+                <option value="GTQ">Quetzal (GTQ)</option>
+                <option value="COP">Peso colombiano (COP)</option>
+            </select>
         </div>
 
         <div>
